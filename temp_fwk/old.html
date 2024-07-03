@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scrolling Page</title>
+    <link rel="icon" href="static/steering-wheel.png">
+    <link rel="stylesheet" href="css/title.css">
+    <link rel="stylesheet" href="css/roll.css">
+    <!-- <link rel="stylesheet" href="css/sensor.css"> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.1/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/camera.css">
+</head>
+<body>
+<ul id="nav">
+    <li class="slide1"></li>
+    <li class="slide2"></li>
+    <li><a href="#index">MOVE</a></li>
+    <li><a href="#servo">SERVO</a></li>
+    <li><a href="#">GAMMA</a></li>
+    <li><a href="#">Delta</a></li>
+    <li><a href="#">Epsilon</a></li>
+</ul>
+<script src="js/title.js"></script>
+<iframe
+        style="width: 720px; height: 405px"
+        src="http://192.168.32.102:8004/vedio_feed"
+        frameborder="no"
+        framespacing="0"
+        scrolling="no"
+        allow="autoplay; encrypted-media"
+        id="backgroundiframe"
+></iframe>
+<div class="page" id="index">
+    <div class="col">
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-1">
+                <button class="btn btn-outline-info" id="turn_left">
+                    <img src="static/turn_left.svg" alt="1"></img>
+                </button>
+            </div>
+            <div class="col-1">
+                <button class="btn btn-outline-info" id="straight">
+                    <img src="static/up.svg" alt="1"></img>
+                </button>
+            </div>
+            <div class="col-1">
+                <button class="btn btn-outline-info" id="turn_right">
+                    <img src="static/turn_right.svg" alt="1"></img>
+                </button>
+            </div>
+            <div class="col-5"></div>
+            <div class="col-1"></div>
+            <div class="col-1">
+                <button class="btn btn-outline-info" id="speed_up">
+                    <img src="static/speed_up.svg" alt="1"></img>
+                </button>
+            </div>
+            <div class="col-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-1">
+                <button class="btn btn-outline-info" id="left">
+                    <img src="static/left.svg" alt="left"></img>
+                </button>
+            </div>
+            <div class="col-1">
+                <button class="btn btn-outline-info" id="stop">
+                    <img src="static/power.svg" alt="stop"></img>
+                </button>
+            </div>
+            <div class="col-1">
+                <button class="btn btn-outline-info" id="right">
+                    <img src="static/right.svg" alt="right"></img>
+                </button>
+            </div>
+            <div class="col-5">
+            </div>
+            <div class="col-1">
+            </div>
+            <div class="col-1">
+            </div>
+            <div class="col-1"></div>w
+        </div>
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-1">
+
+            </div>
+            <div class="col-1">
+                <button class="btn btn-outline-info" id="backward">
+                    <img src="static/down.svg" alt="down"></img>
+                </button>
+            </div>
+            <div class="col-1">
+
+            </div>
+            <div class="col-5"></div>
+            <div class="col-1"></div>
+            <div class="col-1">
+                <button class="btn btn-outline-info" id="speed_down">
+                    <img src="static/speed_down.svg" alt="down"></img>
+                </button>
+            </div>
+            <div class="col-1"></div>
+        </div>
+    </div>
+    <script src="js/move.js"></script>
+</div>
+
+<div class="page" id="servo">
+    <div class="col">
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-1">
+
+            </div>
+            <div class="col-1">
+                <button class="btn btn-outline-info" id="servo_up">
+                    <img src="static/up.svg" alt="1"></img>
+                </button>
+            </div>
+            <div class="col-1">
+
+            </div>
+            <div class="col-5"></div>
+            <div class="col-1"></div>
+            <div class="col-1">
+
+            </div>
+            <div class="col-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-1">
+                <button class="btn btn-outline-info" id="servo_left">
+                    <img src="static/left.svg" alt="left"></img>
+                </button>
+            </div>
+            <div class="col-1">
+
+            </div>
+            <div class="col-1">
+                <button class="btn btn-outline-info" id="servo_right">
+                    <img src="static/right.svg" alt="right"></img>
+                </button>
+            </div>
+            <div class="col-5">
+            </div>
+            <div class="col-1">
+            </div>
+            <div class="col-1">
+            </div>
+            <div class="col-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-1">
+
+            </div>
+            <div class="col-1">
+                <button class="btn btn-outline-info" id="servo_down">
+                    <img src="static/down.svg" alt="down"></img>
+                </button>
+            </div>
+            <div class="col-1">
+
+            </div>
+            <div class="col-5"></div>
+            <div class="col-1"></div>
+            <div class="col-1">
+
+            </div>
+            <div class="col-1"></div>
+        </div>
+    </div>
+    <script src="js/servo.js"></script>
+</div>
+</body>
+</html>

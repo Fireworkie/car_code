@@ -1,0 +1,65 @@
+Language model created by QuickLM on Wed Jun 26 04:39:32 EDT 2024
+Copyright (c) 1996-2010 Carnegie Mellon University and Alexander I. Rudnicky
+
+The model is in standard ARPA format, designed by Doug Paul while he was at MITRE.
+
+The code that was used to produce this language model is available in Open Source.
+Please visit http://www.speech.cs.cmu.edu/tools/ for more information
+
+The (fixed) discount mass is 0.5. The backoffs are computed using the ratio method.
+This model based on a corpus of 10 sentences and 12 words
+
+\data\
+ngram 1=12
+ngram 2=20
+ngram 3=10
+
+\1-grams:
+-0.7782 </s> -0.3010
+-0.7782 <s> -0.2218
+-1.7782 你好 -0.2218
+-1.7782 停止 -0.2218
+-1.7782 减速 -0.2218
+-1.7782 前进 -0.2218
+-1.7782 加速 -0.2218
+-1.7782 右转 -0.2218
+-1.7782 后退 -0.2218
+-1.7782 左转 -0.2218
+-1.7782 测距 -0.2218
+-1.7782 温湿度 -0.2218
+
+\2-grams:
+-1.3010 <s> 你好 0.0000
+-1.3010 <s> 停止 0.0000
+-1.3010 <s> 减速 0.0000
+-1.3010 <s> 前进 0.0000
+-1.3010 <s> 加速 0.0000
+-1.3010 <s> 右转 0.0000
+-1.3010 <s> 后退 0.0000
+-1.3010 <s> 左转 0.0000
+-1.3010 <s> 测距 0.0000
+-1.3010 <s> 温湿度 0.0000
+-0.3010 你好 </s> -0.3010
+-0.3010 停止 </s> -0.3010
+-0.3010 减速 </s> -0.3010
+-0.3010 前进 </s> -0.3010
+-0.3010 加速 </s> -0.3010
+-0.3010 右转 </s> -0.3010
+-0.3010 后退 </s> -0.3010
+-0.3010 左转 </s> -0.3010
+-0.3010 测距 </s> -0.3010
+-0.3010 温湿度 </s> -0.3010
+
+\3-grams:
+-0.3010 <s> 你好 </s>
+-0.3010 <s> 停止 </s>
+-0.3010 <s> 减速 </s>
+-0.3010 <s> 前进 </s>
+-0.3010 <s> 加速 </s>
+-0.3010 <s> 右转 </s>
+-0.3010 <s> 后退 </s>
+-0.3010 <s> 左转 </s>
+-0.3010 <s> 测距 </s>
+-0.3010 <s> 温湿度 </s>
+
+\end\
