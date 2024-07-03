@@ -111,7 +111,8 @@ def face_reco(face_list):
 		frame_bytes = buffer.tobytes()
 
         # 使用生成器输出帧的字节流
-		yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+		yield (b'--frame\r\n'
+	 		   b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
 # 键盘终止函数
 def signal_handler(sig, frame):
