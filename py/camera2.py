@@ -6,7 +6,6 @@ app = Flask(__name__)
 face_cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 recognizer.read('../temp_fjy/trainer/trainer.yml')
-
 # 打开摄像头
 cap = cv2.VideoCapture(0)
 
