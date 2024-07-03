@@ -6,7 +6,10 @@ app = Flask(__name__)
 face_cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 recognizer.read('../temp_fjy/trainer/trainer.yml')
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4da24e32922c4e5abe8736b9947f37f11e4e1474
 # 打开摄像头
 cap = cv2.VideoCapture(0)
 
@@ -34,11 +37,15 @@ def generate_frames():
             roi = cv2.resize(gray[y:y+h, x:x+w], (92, 112))
             id, confidence = recognizer.predict(roi)
             id_str = str(id)
+<<<<<<< HEAD
             # face_list[i] = (id_str[0], x, y, w, h)
+=======
+#            face_list[i] = (id_str[0], x, y, w, h)
+>>>>>>> 4da24e32922c4e5abe8736b9947f37f11e4e1474
 
             confidence = "{0}%".format(round(100 - confidence))
             cv2.putText(frame_show, "person: " + str(id_str[0]), (vx+5, vy-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-            cv2.putText(frame_show, "Confidence: " + str(confidence), (vx+5, vy+h-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+#            cv2.putText(frame_show, "Confidence: " + str(confidence), (vx+5, vy+h-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
         # 将处理后的帧转换为 JPEG 格式
         ret, buffer = cv2.imencode('.jpg', frame_show)
