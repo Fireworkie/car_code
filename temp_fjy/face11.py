@@ -16,9 +16,11 @@ from multiprocessing import Manager
 from adafruit_pca9685 import PCA9685
 from imutils.video import VideoStream
 from multiprocessing import Process, Queue
+import threading
 
+lock = threading.Lock()
 app = Flask(__name__)
-# face_list = Manager().list()
+face_list = list()
 
 face_cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
 recognizer = cv2.face.LBPHFaceRecognizer_create()
@@ -33,9 +35,9 @@ servo_12.angle = 90
 servo_15.angle = 90
 cap = cv2.VideoCapture(0)
 
-def start_server(faceX, faceY, face_list):
+def start_server(faceX, faceY,):
     # 创建Socket对象
-	global flag
+	global face_list
 	server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 	try:
@@ -62,7 +64,7 @@ def start_server(faceX, faceY, face_list):
 				global choose
 				choose = parsed_data.get('traceid')
 				for i in range(len(face_list)):
-					(ii, x, y, w, h) = face_list[i].value
+					(ii, x, y, w, h) = face_list[i]
 					if ii == choose:
 						faceX.value = x + w//2
 						faceY.value = y + h//2 
@@ -77,8 +79,9 @@ def start_server(faceX, faceY, face_list):
         # 关闭服务器
 		server_socket.close()
 		
-def face_reco(face_list):
+def face_reco():
 	signal.signal(signal.SIGINT, signal_handler)
+	global face_list
 	while True:
 		ret, frame = cap.read()
 		frame_show=frame
@@ -100,8 +103,8 @@ def face_reco(face_list):
 			roi = cv2.resize(gray[y:y+h, x:x+w], (92, 112))
 			id, confidence = recognizer.predict(roi)
 			id_str = str(id)
-			face_list[i] = (id_str[0], x, y, w, h)
-
+			with lock:
+				face_list[i] = (id_str[0], x, y, w, h)
 			confidence = "{0}%".format(round(100 - confidence))
 			cv2.putText(frame_show, "person: " + str(id_str[0]), (vx+5, vy-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 #			cv2.putText(frame_show, "Confidence: " + str(confidence), (vx+5, vy+h-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
@@ -197,7 +200,7 @@ def index():
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(face_reco(face_list), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(face_reco(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 # 启动主程序
 if __name__ == "__main__":
@@ -215,7 +218,7 @@ if __name__ == "__main__":
 		faceY = manager.Value("i", 0)
 		outputX = manager.Value("i", 0)
 		outputY = manager.Value("i", 0)
-		face_list = manager.list()
+		# face_list = manager.list()
 		choose = manager.Value("i", 0)
 
 		# 设置一级舵机的PID参数
@@ -234,9 +237,8 @@ if __name__ == "__main__":
 		# 3. tilting       - 对二级舵机进行PID控制，控制俯仰角
 		# 4. setServos     - 根据PID控制的输出驱动舵机s
                 
-		processObjectCenter = Process(target=face_reco,args=(face_list,))
-		processChoose = Process(target=start_server,args=(faceX, faceY, face_list))
-
+		# processObjectCenter = Process(target=face_reco,args=(face_list,))
+		processChoose = Process(target=start_server,args=(faceX, faceY))
 		processPanning = Process(target=pidx_process,args=(panP, panI, panD, centerX, faceX, outputX))
 		processTilting = Process(target=pidy_process,args=(tiltP, tiltI, tiltD, centerY, faceY, outputY))
 		processSetServos = Process(target=set_servos, args=(outputX, outputY))
