@@ -72,7 +72,7 @@ frame_num = 0
 
 while cap.isOpened():
     ret,frame = cap.read()
-    if frame_num % 5 == 0:
+    if frame_num % 3 == 0:
         cv2.imwrite('gesture.jpg',frame)
         image = get_file_content('gesture.jpg')
 
