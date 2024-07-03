@@ -39,7 +39,6 @@ def send_command(command, server_ip='localhost', server_port=8001):
     """发送命令到服务器"""
     # 创建一个socket对象
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    
     try:
         # 连接到服务器
         client_socket.connect((server_ip, server_port))
@@ -91,9 +90,10 @@ while True:
         print(data)
         url = '\"' + 'https://tsn.baidu.com/text2audio?tex=' + '\"' + data + '\"' + "&lan=zh&per=0&pit=7&spd=5&cuid=1234567890123456&ctp=1&tok=" + token + '\"'
         os.system("ffplay -vn -autoexit " + "%s"%(url))
-    #elif voice == u'小车朝北。':
-         #to_north()
-         #os.system("ffplay -vn -autoexit " + "https://tsn.baidu.com/text2audio?tex=小车已朝北&lan=zh&per=0&pit=7&spd=5&cuid=1234567890123456&ctp=1&tok=" + token)
+    elif voice == u'小车朝北。':
+        to_north()
+        url = '\"' + 'https://tsn.baidu.com/text2audio?tex=' + '\"' + '小车已朝北' + '\"' + "&lan=zh&per=0&pit=7&spd=5&cuid=1234567890123456&ctp=1&tok=" + token + '\"'
+        os.system("ffplay -vn -autoexit " + "%s"%(url))
     elif voice == u'退出。':
         break
     else:
