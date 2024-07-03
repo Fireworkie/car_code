@@ -4,12 +4,14 @@ from flask import Flask, Response
 app = Flask(__name__)
 
 face_cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
+recognizer = cv2.face.LBPHFaceRecognizer_create()
+recognizer.read('trainer/trainer.yml')
 
 # 打开摄像头
 cap = cv2.VideoCapture(0)
 
 def generate_frames():
-    signal.signal(signal.SIGINT, signal_handler)
+    # signal.signal(signal.SIGINT, signal_handler)
     while True:
         # 读取帧
         ret, frame = cap.read()
