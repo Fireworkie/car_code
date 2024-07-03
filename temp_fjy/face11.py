@@ -1,27 +1,26 @@
 #-*- coding: UTF-8 -*-	
 # 调用必需库
-import os
+# import os
 import cv2
 import sys
 import json
-import time
+# import time
 import busio
 import socket
-import signal
+# import signal
 from pid import PID
 from board import SCL, SDA
 from adafruit_motor import servo
 from flask import Flask, Response
-from multiprocessing import Manager
+# from multiprocessing import Manager
 from adafruit_pca9685 import PCA9685
-from imutils.video import VideoStream
-from multiprocessing import Process, Queue
+# from imutils.video import VideoStream
+# from multiprocessing import Process, Queue
 import threading
 
 lock = threading.Lock()
 app = Flask(__name__)
 face_list = list()
-
 face_cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 recognizer.read('trainer/trainer.yml')
@@ -35,7 +34,22 @@ servo_12.angle = 90
 servo_15.angle = 90
 cap = cv2.VideoCapture(0)
 
-def start_server(faceX, faceY,):
+faceX = 0
+faceY = 0
+outputX = 0
+outputY = 0
+# choose = 0
+
+		# 设置一级舵机的PID参数
+panP = 0.0769
+panI = 0.03
+panD = 0.00415
+
+		# 设置二级舵机的PID参数
+tiltP = 0.0768
+tiltI = 0.03
+tiltD = 0.00415
+def start_server():
     # 创建Socket对象
 	global face_list
 	server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -61,13 +75,14 @@ def start_server(faceX, faceY,):
         	# 解析JSON数据
 				parsed_data = json.loads(json_data)
         	# 获取command字段的值
-				global choose
+				global  faceX, faceY
 				choose = parsed_data.get('traceid')
 				for i in range(len(face_list)):
 					(ii, x, y, w, h) = face_list[i]
 					if ii == choose:
-						faceX.value = x + w//2
-						faceY.value = y + h//2 
+						with lock:
+							faceX= x + w//2
+							faceY = y + h//2 
 			except Exception as e:
 				print("处理客户端数据时出现错误:", e)
 			finally:
@@ -80,7 +95,7 @@ def start_server(faceX, faceY,):
 		server_socket.close()
 		
 def face_reco():
-	signal.signal(signal.SIGINT, signal_handler)
+	# signal.signal(signal.SIGINT, signal_handler)
 	global face_list
 	while True:
 		ret, frame = cap.read()
@@ -105,7 +120,7 @@ def face_reco():
 			id_str = str(id)
 			with lock:
 				face_list[i] = (id_str[0], x, y, w, h)
-			confidence = "{0}%".format(round(100 - confidence))
+			# confidence = "{0}%".format(round(100 - confidence))
 			cv2.putText(frame_show, "person: " + str(id_str[0]), (vx+5, vy-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 #			cv2.putText(frame_show, "Confidence: " + str(confidence), (vx+5, vy+h-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
@@ -118,66 +133,54 @@ def face_reco():
 		yield ( b'--frame\r\n'
 				b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
-# 键盘终止函数
-def signal_handler(sig, frame):
-    # 输出状态信息
-	print("[INFO] You pressed `ctrl + c`! Exiting...")
-	cap.release()
-    
-    # 停止所有舵机
-	#for channel in range(16):  # PCA9685有16个通道
-	#	pwm.set_pwm(channel, 0, 0)
-    
-    # 其他必要的清理工作
-	print("Cleanup complete.")
-	# 退出
-	sys.exit()
-
-def pidx_process(p, i, d, centerX, faceX, outputX):
+def pidx_process(p, i, d):
 	# ctrl+c退出进程
-	signal.signal(signal.SIGINT, signal_handler)
+	# signal.signal(signal.SIGINT, signal_handler)
 	
  	# 创建一个PID类的对象并初始化
-	p = PID(p.value, i.value, d.value)
+	p = PID(p, i, d)
 	p.initialize()
-
+	global faceX
 	# 进入循环
 	while True:
 		# 计算误差
-		error = 480 - faceX.value
+		error = 480 - faceX
 		#print("centerX: \n", centerX.value)
 		#print("faceX: \n", faceX.value)
 		#print("error: \n", error)
-
+		global outputX
 		# 更新输出值
-		outputX.value = p.update(error)
+		with lock:
+			outputX = p.update(error)
 		#print("outputX: \n", outputX.value)
 		#time.sleep(0.25)
 
-def pidy_process(p, i, d, centerY, faceY, outputY):
+def pidy_process(p,i,d):
 	# ctrl+c退出进程
-	signal.signal(signal.SIGINT, signal_handler)
+	# signal.signal(signal.SIGINT, signal_handler)
 	
  	# 创建一个PID类的对象并初始化
-	p = PID(p.value, i.value, d.value)
+	p = PID(p, i, d)
 	p.initialize()
-
+	global faceY
 	# 进入循环
 	while True:
 		# 计算误差
-		error = 320 - faceY.value
+		error = 320 - faceY
 		#print("centerY: \n", centerY.value)
 		#print("faceY: \n", faceY.value)
 		#print("error: \n", error)
-
-		# 更新输出值
-		outputY.value = p.update(error)
+		global outputY
+		# 更新输出值'
+		with lock:
+			outputY= p.update(error)
 		#print("outputY: \n", outputY.value)
 		#time.sleep(0.25)
 
-def set_servos(outputX, outputY):
+def set_servos():
 	# ctrl+c退出进程
-	signal.signal(signal.SIGINT, signal_handler)
+	# signal.signal(signal.SIGINT, signal_handler)
+	global outputX, outputY
 	servo_12.angle = 90
 	servo_15.angle = 90
 	# 进入循环
@@ -187,10 +190,10 @@ def set_servos(outputX, outputY):
 		# 偏角变号
 		#yaw = -1 * panAngle.value
 		#pitch = -1 * tiltAngle.value
-		if outputX.value > 5 and outputX.value < 175:
-			servo_12.angle = outputX.value
-		if outputY.value > 5 and outputY.value < 75:        
-			servo_15.angle = max(5, min(75, outputY.value))+60
+		if outputX > 5 and outputX < 175:
+			servo_12.angle = outputX
+		if outputY > 5 and outputY < 75:        
+			servo_15.angle = max(5, min(75, outputY))+60
 		
 		# 设置舵机偏角
 
@@ -206,30 +209,10 @@ def video_feed():
 if __name__ == "__main__":
 	app.run(host='0.0.0.0', port=8003,debug=False)
 	
-	servo_12.angle = 90
-	servo_15.angle = 90
-
+	# signal.signal(signal.SIGINT, signal_handler)
 	# 启动多进程变量管理
-	with Manager() as manager:
 		# 舵机角度置零
-		centerX = manager.Value("i", 0)
-		centerY = manager.Value("i", 0)
-		faceX = manager.Value("i", 0)
-		faceY = manager.Value("i", 0)
-		outputX = manager.Value("i", 0)
-		outputY = manager.Value("i", 0)
-		# face_list = manager.list()
-		choose = manager.Value("i", 0)
-
-		# 设置一级舵机的PID参数
-		panP = manager.Value("f", 0.0769)
-		panI = manager.Value("f", 0.03)
-		panD = manager.Value("f", 0.00415)
-
-		# 设置二级舵机的PID参数
-		tiltP = manager.Value("f", 0.0768)
-		tiltI = manager.Value("f", 0.03)
-		tiltD = manager.Value("f", 0.00415)
+	
 
     	# 创建4个独立进程
         # 1. objectCenter  - 探测人脸
@@ -237,18 +220,20 @@ if __name__ == "__main__":
 		# 3. tilting       - 对二级舵机进行PID控制，控制俯仰角
 		# 4. setServos     - 根据PID控制的输出驱动舵机s
                 
+		
 		# processObjectCenter = Process(target=face_reco,args=(face_list,))
-		processChoose = Process(target=start_server,args=(faceX, faceY))
-		processPanning = Process(target=pidx_process,args=(panP, panI, panD, centerX, faceX, outputX))
-		processTilting = Process(target=pidy_process,args=(tiltP, tiltI, tiltD, centerY, faceY, outputY))
-		processSetServos = Process(target=set_servos, args=(outputX, outputY))
+
+	processChoose = threading.Thread(target=start_server,args=())
+	processPanning = threading.Thread(target=pidx_process,args=(panP, panI, panD))
+	processTilting = threading.Thread(target=pidy_process,args=(tiltP, tiltI, tiltD))
+	processSetServos = threading.Thread(target=set_servos, args=())
 
 		# 开启5个进程
 		# processObjectCenter.start()
-		processChoose.start()
-		processPanning.start()
-		processTilting.start()
-		processSetServos.start()
+	processChoose.start()
+	processPanning.start()
+	processTilting.start()
+	processSetServos.start()
 
 #		processObjectCenter.join()
 #		processChoose.join()
