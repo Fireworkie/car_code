@@ -59,22 +59,22 @@ class MotorDriver():
     def forward(self):
             GPIO.output(self.IN1, 1)
             GPIO.output(self.IN2, 0)
-            GPIO.output(self.IN3, 1)
-            GPIO.output(self.IN4, 0)
-            GPIO.output(self.IN5, 0)
-            GPIO.output(self.IN6, 1)
+            GPIO.output(self.IN3, 0)
+            GPIO.output(self.IN4, 1)
+            GPIO.output(self.IN5, 1)
+            GPIO.output(self.IN6, 0)
             GPIO.output(self.IN7, 0)
             GPIO.output(self.IN8, 1)
     def back(self):
             GPIO.output(self.IN1, 0)
             GPIO.output(self.IN2, 1)
-            GPIO.output(self.IN3, 0)
-            GPIO.output(self.IN4, 1)
-            GPIO.output(self.IN5, 1)
-            GPIO.output(self.IN6, 0)
+            GPIO.output(self.IN3, 1)
+            GPIO.output(self.IN4, 0)
+            GPIO.output(self.IN5, 0)
+            GPIO.output(self.IN6, 1)
             GPIO.output(self.IN7, 1)
             GPIO.output(self.IN8, 0)
-    def right(self):
+    def turn_right(self):
             GPIO.output(self.IN1, 0)
             GPIO.output(self.IN2, 1)
             GPIO.output(self.IN3, 1)
@@ -83,7 +83,7 @@ class MotorDriver():
             GPIO.output(self.IN6, 0)
             GPIO.output(self.IN7, 0)
             GPIO.output(self.IN8, 1)
-    def left(self):
+    def turn_left(self):
             GPIO.output(self.IN1, 1)
             GPIO.output(self.IN2, 0)
             GPIO.output(self.IN3, 0)
@@ -92,7 +92,7 @@ class MotorDriver():
             GPIO.output(self.IN6, 1)
             GPIO.output(self.IN7, 1)
             GPIO.output(self.IN8, 0)
-    def turn_left(self):
+    def right(self):
             GPIO.output(self.IN1, 0)
             GPIO.output(self.IN2, 1)
             GPIO.output(self.IN3, 0)
@@ -101,7 +101,7 @@ class MotorDriver():
             GPIO.output(self.IN6, 1)
             GPIO.output(self.IN7, 0)
             GPIO.output(self.IN8, 1)
-    def turn_right(self):
+    def left(self):
             GPIO.output(self.IN1, 1)
             GPIO.output(self.IN2, 0)
             GPIO.output(self.IN3, 1)
