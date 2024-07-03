@@ -18,6 +18,7 @@ from imutils.video import VideoStream
 from multiprocessing import Process, Queue
 
 app = Flask(__name__)
+# face_list = Manager().list()
 
 face_cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
 recognizer = cv2.face.LBPHFaceRecognizer_create()
@@ -196,7 +197,7 @@ def index():
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(face_reco(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(face_reco(face_list), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 # 启动主程序
 if __name__ == "__main__":
@@ -241,7 +242,7 @@ if __name__ == "__main__":
 		processSetServos = Process(target=set_servos, args=(outputX, outputY))
 
 		# 开启5个进程
-		processObjectCenter.start()
+		# processObjectCenter.start()
 		processChoose.start()
 		processPanning.start()
 		processTilting.start()
