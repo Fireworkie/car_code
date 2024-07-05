@@ -61,3 +61,7 @@ def main_loop():
     heading_angle = int(heading * 180 / pai)
     return heading_angle
 
+data=main_loop()
+print(data)
+
+

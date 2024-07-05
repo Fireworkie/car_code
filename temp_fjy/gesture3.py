@@ -68,11 +68,12 @@ def get_file_content(filePath):
 cap = cv2.VideoCapture(0)
 cap.set(3,352)
 cap.set(4,288)
-frame_num = 0
+# frame_num = 0
 
 while cap.isOpened():
     ret,frame = cap.read()
-    if frame_num % 3 == 0:
+    if  True:
+        # frame_num=0
         cv2.imwrite('gesture.jpg',frame)
         image = get_file_content('gesture.jpg')
 
@@ -81,7 +82,7 @@ while cap.isOpened():
         num = message['result_num']
         if num == 0:
             print('没有识别到手势')
-            cv2.imshow("gesture",frame)
+            # cv2.imshow("gesture",frame)
         else:
             results = message['result']
             content = []
@@ -108,11 +109,8 @@ while cap.isOpened():
                     send_command('stop')
                 #cv2.rectangle(frame, (result['left'],result['top']),(result['left'] + result['width'],result['top'] + result['height']),(255,255,255),2)
                 #cv2.imshow("gesture",frame)
-
-    frame_num += 1
-
-    if cv2.waitKey(200) & 0xff == 27:
-        break
+    time.sleep(0.3)
+    # frame_num += 1
 
 cap.release()
-cv2.destroyWindow("gesture")
+# cv2.destroyWindow("gesture")

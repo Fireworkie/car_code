@@ -1,4 +1,6 @@
 import cv2
+import socket
+import numpy as np
 from flask import Flask, Response
 
 app = Flask(__name__)
@@ -7,13 +9,31 @@ face_cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.x
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 recognizer.read('../temp_fjy/trainer/trainer.yml')
 # 打开摄像头
-cap = cv2.VideoCapture(0)
+#cap = cv2.VideoCapture(0)
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+receiver_address = ('localhost', 8005)  # 接收程序的主机和端口
+sock.bind(receiver_address)
+print('等待连接...')    
+sock.listen(1)
 
 def generate_frames():
     # signal.signal(signal.SIGINT, signal_handler)
     while True:
+        conn, addr = sock.accept()
+        print('连接已建立:', addr)
+        frame_bytes = b''
+#    while True:
+        data = conn.recv(4096)
+        if not data:
+            break
+        frame_bytes += data
+
+    # 将接收到的字节流转换为图像
+#        buffer = pickle.loads(frame_bytes)
+#        frame = cv2.imdecode(buffer, cv2.IMREAD_COLOR)
+        frame = cv2.imdecode(np.frombuffer(frame_bytes, np.uint8), cv2.IMREAD_COLOR)
         # 读取帧
-        ret, frame = cap.read()
+#        ret, frame = cap.read()
         frame_show=frame
 
         if not ret:
@@ -48,7 +68,8 @@ def generate_frames():
         # 使用生成器输出帧的字节流
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
-
+        conn.close()
+    # 关闭连接
 @app.route('/')
 def index():
     return "OpenCV Camera Streaming with Flask"

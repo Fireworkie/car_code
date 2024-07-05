@@ -1,4 +1,4 @@
-from compass import main_loop
+from compass import main_loop,init,get_value
 import time
 import json
 import socket
@@ -27,10 +27,13 @@ def left():
 
 def to_north():
     result = main_loop()
-    while (not(result>=100 and result<=120)):
+    while (not(result>=45 and result<=55)):
         left()
         time.sleep(0.5)
         result = main_loop()
+        print(result)
+        print("\n")
     stop()
+    # print("North direction reached")
 
 to_north()

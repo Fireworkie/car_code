@@ -3,22 +3,22 @@ import socket
 import time
 import json
 
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)
+
 
 data={
     'command':'stop'
 }
 json_data=json.dumps(data).encode('utf-8')
 
-trig = 16
-echo = 18
-
-GPIO.setup(trig, GPIO.OUT)
-GPIO.setup(echo, GPIO.IN)
-
-
 def get_distance():
+
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BOARD)
+    trig = 16
+    echo = 18
+
+    GPIO.setup(trig, GPIO.OUT)
+    GPIO.setup(echo, GPIO.IN)
     """返回到障碍物的距离"""
     # 向trig端发送10us高电平信号
     GPIO.output(trig, 1)
@@ -38,7 +38,8 @@ def get_distance():
     duration = end_time - start_time
     # 计算距离，单位为cm
     distance = duration * (34000)/2
-    return distance
+#    return distance
+    return("前方障碍物距离{:.1f}厘米".format(distance))
 
 if __name__ == "__main__":
     while True:

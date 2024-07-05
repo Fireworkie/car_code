@@ -6,7 +6,9 @@ import requests
 from aip import AipBodyAnalysis
 from aip import AipSpeech
 from dht11 import read_dht11
+import RPi.GPIO as GPIO
 #from north import to_north
+from obstance import get_distance
 
 # 百度语音识别API配置
 APP_ID = '74238573'
@@ -62,13 +64,15 @@ def send_command(command, server_ip='localhost', server_port=8001):
         # 关闭客户端socket
         client_socket.close()
 
-while True:
-    print("开始录音（“前进，后退，左转，右转，加速，减速，停止”）...")
-    toPCM()
-    print("录音结束，开始识别...")
-    time.sleep(3)
-    voice = getVoice()
-    print("识别结果：", voice)
+if __name__ == '__main__':
+    while True:
+        GPIO.cleanup()
+        print("开始录音（“前进，后退，左转，右转，加速，减速，停止”）...")
+        toPCM()
+        print("录音结束，开始识别...")
+        # time.sleep(3)
+        voice = getVoice()
+        print("识别结果：", voice)
 #    if voice == u'前进。':
 #        send_command('forward')
 #    elif voice == u'后退。':
@@ -85,16 +89,23 @@ while True:
 #        time.sleep(1)
 #    elif voice == u'停止。':
 #        send_command('stop')
-    if voice == u'检测温湿度。':
-        data = read_dht11()
-        print(data)
-        url = '\"' + 'https://tsn.baidu.com/text2audio?tex=' + '\"' + data + '\"' + "&lan=zh&per=0&pit=7&spd=5&cuid=1234567890123456&ctp=1&tok=" + token + '\"'
-        os.system("ffplay -vn -autoexit " + "%s"%(url))
-    elif voice == u'小车朝北。':
-        to_north()
-        url = '\"' + 'https://tsn.baidu.com/text2audio?tex=' + '\"' + '小车已朝北' + '\"' + "&lan=zh&per=0&pit=7&spd=5&cuid=1234567890123456&ctp=1&tok=" + token + '\"'
-        os.system("ffplay -vn -autoexit " + "%s"%(url))
-    elif voice == u'退出。':
-        break
-    else:
-        print("未识别到命令")
+        if voice == u'检测温湿度。':
+            data = read_dht11()
+            print(data)
+            url = '\"' + 'https://tsn.baidu.com/text2audio?tex=' + '\"' + data + '\"' + "&lan=zh&per=0&pit=7&spd=5&cuid=1234567890123456&ctp=1&tok=" + token + '\"'
+            os.system("ffplay -vn -autoexit " + "%s"%(url))
+#        elif voice == u'小车朝北。':
+#            to_north()
+#            url = '\"' + 'https://tsn.baidu.com/text2audio?tex=' + '\"' + '小车已朝北' + '\"' + "&lan=zh&per=0&pit=7&spd=5&cuid=1234567890123456&ctp=1&tok=" + token + '\"'
+#            os.system("ffplay -vn -autoexit " + "%s"%(url))
+        elif voice == u'测距。':
+            data = get_distance()
+            print(data)
+            url = '\"' + 'https://tsn.baidu.com/text2audio?tex=' + '\"' + '当前距离为' + data + '\"' + "&lan=zh&per=0&pit=7&spd=5&cuid=1234567890123456&ctp=1&tok=" + token + '\"'
+            os.system("ffplay -vn -autoexit " + "%s"%(url))
+        elif voice == u'退出。':
+            url = '\"' + 'https://tsn.baidu.com/text2audio?tex=' + '\"' + '已退出'  + '\"' + "&lan=zh&per=0&pit=7&spd=5&cuid=1234567890123456&ctp=1&tok=" + token + '\"'
+            os.system("ffplay -vn -autoexit " + "%s"%(url))
+            break
+        else:
+            print("未识别到命令")

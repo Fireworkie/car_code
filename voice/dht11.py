@@ -1,9 +1,12 @@
 import time
 import board
 import adafruit_dht
+import RPi.GPIO as GPIO
+
 
 def read_dht11():
-
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
     dht_device = adafruit_dht.DHT11(board.D4)
     while True:
         try:
